@@ -254,7 +254,7 @@ def check_sudoku(sudoku):
     return True
 
 
-def play():
+def __main__():
     '''Contains all the functionality for playing a game of Sudoku.'''
     easy = [
         [0, 0, 0, 9, 0, 0, 0, 3, 0],
@@ -422,4 +422,4 @@ def play():
 
 
 if __name__ == '__main__':
-    play()
+    __main__()
