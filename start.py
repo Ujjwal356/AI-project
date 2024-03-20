@@ -1,72 +1,54 @@
-import pygame
-import sys
-import tictactoe
-import sudoku
-import chess
+import tkinter as tk
+from tkinter import messagebox
+import os
 
-# Initialize Pygame
-pygame.init()
+class GameHub:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Game Hub")
+        self.root.geometry("300x250")
+        self.root.configure(bg="black") 
+        self.root.iconphoto(True, tk.PhotoImage(file="icon.png"))    
 
-# Constants
-WIDTH, HEIGHT = 600, 400
-BG_COLOR = (220, 220, 220)  # Light gray
-BUTTON_COLOR = (0, 128, 0)
-TEXT_COLOR = (255, 255, 255)
-BUTTON_WIDTH, BUTTON_HEIGHT = 200, 50
-BUTTON_MARGIN = 20
-FPS = 30
+        self.label = tk.Label(root, text="Welcome to the Game Hub!", font=("Arial", 16), bg="black", fg="white")
+        self.label.pack(pady=10)
 
-# Initialize screen
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Game Selection")
-clock = pygame.time.Clock()
+        self.tic_tac_toe_btn = tk.Button(root, text="Tic Tac Toe", command=self.open_tic_tac_toe, bg="gray", fg="white", activebackground="green", activeforeground="white", border=5, borderwidth=2, relief="raised", font=("Arial", 12))
+        self.tic_tac_toe_btn.pack(fill=tk.X, padx=20, pady=5)
 
-# Font
-font = pygame.font.Font(None, 36)
+        self.chess_btn = tk.Button(root, text="Chess", command=self.open_chess, bg="gray", fg="white", activebackground="green", activeforeground="white", border=5, borderwidth=2, relief="raised", font=("Arial", 12))
+        self.chess_btn.pack(fill=tk.X, padx=20, pady=5)
 
-# Function to draw text on screen
-def draw_text(text, x, y):
-    text_surface = font.render(text, True, TEXT_COLOR)
-    text_rect = text_surface.get_rect(center=(x, y))
-    screen.blit(text_surface, text_rect)
+        self.sudoku_btn = tk.Button(root, text="Sudoku", command=self.open_sudoku, bg="gray", fg="white", activebackground="green", activeforeground="white", border=5, borderwidth=2, relief="raised", font=("Arial", 12))
+        self.sudoku_btn.pack(fill=tk.X, padx=20, pady=5)
 
-# Function to create buttons
-def create_button(text, x, y):
-    pygame.draw.rect(screen, BUTTON_COLOR, (x - BUTTON_WIDTH // 2, y - BUTTON_HEIGHT // 2, BUTTON_WIDTH, BUTTON_HEIGHT))
-    draw_text(text, x, y)
+        self.exit_btn = tk.Button(root, text="Exit", command=self.on_exit, bg="gray", fg="white", activebackground="red", activeforeground="white", border=5, borderwidth=2, relief="raised", font=("Arial", 12))
+        self.exit_btn.pack(fill=tk.X, padx=20, pady=5)
 
-# Main loop
-selected_game = None
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            if WIDTH // 2 - BUTTON_WIDTH // 2 <= mouse_pos[0] <= WIDTH // 2 + BUTTON_WIDTH // 2:
-                if HEIGHT // 2 - BUTTON_HEIGHT <= mouse_pos[1] <= HEIGHT // 2 - BUTTON_HEIGHT // 2 + BUTTON_HEIGHT:
-                    selected_game = "Tic Tac Toe"
-                elif HEIGHT // 2 + BUTTON_MARGIN <= mouse_pos[1] <= HEIGHT // 2 + BUTTON_MARGIN + BUTTON_HEIGHT:
-                    selected_game = "Sudoku"
-                elif HEIGHT // 2 + 2 * BUTTON_MARGIN + BUTTON_HEIGHT <= mouse_pos[1] <= HEIGHT // 2 + 2 * BUTTON_MARGIN + 2 * BUTTON_HEIGHT:
-                    selected_game = "Chess"
-                    
-    if selected_game:
-        if selected_game == "Tic Tac Toe":
-            tictactoe.__main__()
-        elif selected_game == "Sudoku":
-            sudoku.__main__()
-        elif selected_game == "Chess":
-            chess.__main__()
-        selected_game = None  # Reset selected game after launching
+        # Add hover effects
+        self.add_hover_effects(self.tic_tac_toe_btn)
+        self.add_hover_effects(self.chess_btn)
+        self.add_hover_effects(self.sudoku_btn)
+        self.add_hover_effects(self.exit_btn)
 
-    screen.fill(BG_COLOR)
-    create_button("Tic Tac Toe", WIDTH // 2, HEIGHT // 2 - BUTTON_MARGIN)
-    create_button("Sudoku", WIDTH // 2, HEIGHT // 2 + BUTTON_MARGIN)
-    create_button("Chess", WIDTH // 2, HEIGHT // 2 + 2 * BUTTON_MARGIN + BUTTON_HEIGHT)
-    pygame.display.flip()
-    clock.tick(FPS)
+    def add_hover_effects(self, widget):
+        widget.bind("<Enter>", lambda e: widget.config(bg="darkgray"))
+        widget.bind("<Leave>", lambda e: widget.config(bg="gray"))
 
-pygame.quit()
-sys.exit()
+    def open_tic_tac_toe(self):
+        os.system("python tictactoe.py")
+
+    def open_chess(self):
+        os.system("python chess.py")
+
+    def open_sudoku(self):
+        os.system("python sudoku.py")
+
+    def on_exit(self):
+        if messagebox.askokcancel("Quit", "Are you sure you want to exit?"):
+            self.root.destroy()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = GameHub(root)
+    root.mainloop()
